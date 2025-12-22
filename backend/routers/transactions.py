@@ -42,7 +42,12 @@ class ProfitResponse(BaseModel):
 @router.post(
     "/", response_model=TransactionResponse, status_code=status.HTTP_201_CREATED
 )
-def create_transaction(txn: TransactionCreate, db: Session = Depends(get_db)):
+def upsert_transaction(txn: TransactionCreate, db: Session = Depends(get_db)):
+    """
+    新增或更新记账记录
+    1. 如果同一指标、同一天的记录已存在，则更新该记录
+    2. 否则新增记录
+    """
     # 检查指标是否存在 & 是否激活
     metric = db.query(Metric).filter(Metric.id == txn.metric_id).first()
     if not metric:
@@ -50,8 +55,33 @@ def create_transaction(txn: TransactionCreate, db: Session = Depends(get_db)):
     if metric.is_active is False:
         raise HTTPException(status_code=400, detail="该指标已停用")
 
-    # 创建记录（唯一约束由数据库保证）
-    try:
+    # 检查是否已存在相同日期的记录
+    db_txn = (
+        db.query(Transaction)
+        .filter(
+            and_(
+                Transaction.metric_id == txn.metric_id,
+                Transaction.record_date == txn.record_date,
+            )
+        )
+        .first()
+    )
+
+    if db_txn:
+        # 已存在相同日期的记录，更新
+        update_data = txn.model_dump(exclude_unset=True)
+
+        for key, value in update_data.items():
+            setattr(db_txn, key, value)
+
+        db.commit()
+        db.refresh(db_txn)
+
+        # 注入 metric_name
+        db_txn.metric_name = metric.name
+        return db_txn
+    else:
+        # 新建记录
         db_txn = Transaction(**txn.model_dump())
         db.add(db_txn)
         db.commit()
@@ -60,14 +90,6 @@ def create_transaction(txn: TransactionCreate, db: Session = Depends(get_db)):
         # 注入 metric_name
         db_txn.metric_name = metric.name
         return db_txn
-    except Exception as e:
-        db.rollback()
-        if "UNIQUE constraint failed" in str(e):
-            raise HTTPException(
-                status_code=400,
-                detail=f"指标 '{metric.name}' 在 {txn.record_date} 已有记录",
-            )
-        raise HTTPException(status_code=500, detail="创建失败")
 
 
 @router.get("/", response_model=List[TransactionResponse])
