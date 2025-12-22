@@ -1,6 +1,14 @@
 # backend/models/transaction.py
 from database import Base
-from sqlalchemy import Column, Date, Float, ForeignKey, Integer, String
+from sqlalchemy import (
+    Column,
+    Date,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    UniqueConstraint,
+)
 from sqlalchemy.orm import relationship
 
 
@@ -19,4 +27,7 @@ class Transaction(Base):
     metric = relationship("Metric", back_populates="transactions")
 
     # 联合唯一约束：每天每个指标只允许一条记录（防重复）
-    __table_args__ = ({"sqlite_autoincrement": True},)
+    __table_args__ = (
+        UniqueConstraint("metric_id", "record_date", name="uq_metric_date"),
+        {"sqlite_autoincrement": True},
+    )
