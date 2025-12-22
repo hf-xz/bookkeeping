@@ -1,3 +1,4 @@
-from .transaction import Category, Transaction
+from .metric import Metric
+from .transaction import Transaction
 
-__all__ = ["Transaction", "Category"]
+__all__ = ["Metric", "Transaction"]
