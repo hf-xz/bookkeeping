@@ -19,6 +19,8 @@ export default defineConfig({
     vueDevTools(),
     tailwindcss(),
     AutoImport({
+      imports: ['vue', 'vue-router', 'pinia'],
+      dirs: ['src/stores'],
       resolvers: [VantResolver()],
     }),
     Components({
