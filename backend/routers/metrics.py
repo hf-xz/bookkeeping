@@ -41,7 +41,7 @@ class MetricResponse(MetricBase):
 
 
 # 🚀 路由
-@router.post("/", response_model=MetricResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=MetricResponse, status_code=status.HTTP_201_CREATED)
 def create_metric(metric: MetricCreate, db: Session = Depends(get_db)):
     # 检查重名
     db_metric = db.query(Metric).filter(Metric.name == metric.name).first()
@@ -54,7 +54,7 @@ def create_metric(metric: MetricCreate, db: Session = Depends(get_db)):
     return db_metric
 
 
-@router.get("/", response_model=List[MetricResponse])
+@router.get("", response_model=List[MetricResponse])
 def read_metrics(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     metrics = db.query(Metric).offset(skip).limit(limit).all()
     return metrics

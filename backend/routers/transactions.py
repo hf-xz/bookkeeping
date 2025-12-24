@@ -40,7 +40,7 @@ class ProfitResponse(BaseModel):
 
 # 🚀 路由
 @router.post(
-    "/", response_model=TransactionResponse, status_code=status.HTTP_201_CREATED
+    "", response_model=TransactionResponse, status_code=status.HTTP_201_CREATED
 )
 def upsert_transaction(txn: TransactionCreate, db: Session = Depends(get_db)):
     """
@@ -92,7 +92,7 @@ def upsert_transaction(txn: TransactionCreate, db: Session = Depends(get_db)):
         return db_txn
 
 
-@router.get("/", response_model=List[TransactionResponse])
+@router.get("", response_model=List[TransactionResponse])
 def read_transactions(
     start_date: Optional[date] = None,
     end_date: Optional[date] = None,
@@ -120,7 +120,7 @@ def read_transactions(
     return txns
 
 
-@router.get("/profit/", response_model=List[ProfitResponse])
+@router.get("/profit", response_model=List[ProfitResponse])
 def get_profit_summary(
     start_date: date = date.today() - timedelta(days=30),
     end_date: date = date.today(),
