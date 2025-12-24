@@ -1,0 +1,11 @@
+export interface Transaction {
+  id: number
+  metric_id: number
+  value: number
+  record_date: string
+  note: string
+}
+
+export interface TransactionWithMetricName extends Transaction {
+  metric_name: string
+}

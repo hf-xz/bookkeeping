@@ -5,11 +5,11 @@ const tabs = [
     icon: 'home-o',
     title: '首页',
   },
-  // {
-  //   name: '/records',
-  //   icon: 'record-o',
-  //   title: '记录',
-  // },
+  {
+    route: '/record',
+    icon: 'orders-o',
+    title: '记录',
+  },
 ]
 </script>
 

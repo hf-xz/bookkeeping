@@ -20,7 +20,7 @@ export default defineConfig({
     tailwindcss(),
     AutoImport({
       imports: ['vue', 'vue-router', 'pinia'],
-      dirs: ['src/stores'],
+      dirs: ['src/stores', 'src/models', 'src/utils', 'src/apis'],
       resolvers: [VantResolver()],
     }),
     Components({
@@ -30,6 +30,15 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
     },
   },
 })
