@@ -55,8 +55,8 @@ def create_metric(metric: MetricCreate, db: Session = Depends(get_db)):
 
 
 @router.get("", response_model=List[MetricResponse])
-def read_metrics(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    metrics = db.query(Metric).offset(skip).limit(limit).all()
+def read_metrics(db: Session = Depends(get_db)):
+    metrics = db.query(Metric).all()
     return metrics
 
 

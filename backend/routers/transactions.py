@@ -97,8 +97,6 @@ def read_transactions(
     start_date: Optional[date] = None,
     end_date: Optional[date] = None,
     metric_id: Optional[int] = None,
-    skip: int = 0,
-    limit: int = 100,
     db: Session = Depends(get_db),
 ):
     query = db.query(Transaction).join(Metric)
@@ -110,9 +108,7 @@ def read_transactions(
     if metric_id:
         query = query.filter(Transaction.metric_id == metric_id)
 
-    txns = (
-        query.order_by(Transaction.record_date.desc()).offset(skip).limit(limit).all()
-    )
+    txns = query.order_by(Transaction.record_date.desc()).all()
 
     # 注入 metric_name
     for t in txns:
