@@ -9,7 +9,7 @@ const router = createRouter({
       name: 'home',
     },
     {
-      component: () => import('@/views/RecordView.vue'),
+      component: () => import('@/views/RecordView/index.vue'),
       path: '/record',
       name: 'record',
     },
