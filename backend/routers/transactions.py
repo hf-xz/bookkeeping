@@ -92,6 +92,18 @@ def upsert_transaction(txn: TransactionCreate, db: Session = Depends(get_db)):
         return db_txn
 
 
+@router.post("/bulk", status_code=status.HTTP_201_CREATED)
+def bulk_upsert_transactions(
+    txns: List[TransactionCreate], db: Session = Depends(get_db)
+):
+    """
+    批量新增或更新记账记录
+    """
+    for txn in txns:
+        upsert_transaction(txn, db)
+    return {"message": f"Successfully processed {len(txns)} transactions."}
+
+
 @router.get("", response_model=List[TransactionResponse])
 def read_transactions(
     start_date: Optional[date] = None,
