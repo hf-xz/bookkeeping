@@ -31,5 +31,5 @@ onMounted(async () => {
 
 <template>
   <h1 class="text-3xl font-bold text-blue-600">记录</h1>
-  <DayRecordForm :transactions="records[currentDate]!" />
+  <DayRecordForm :transactions="records[currentDate] || []" :date="currentDate" />
 </template>

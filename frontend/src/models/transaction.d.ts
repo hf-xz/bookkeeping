@@ -6,6 +6,8 @@ export interface Transaction {
   note: string
 }
 
+export type TransactionUpsert = Omit<Transaction, 'id'>
+
 export interface TransactionWithMetricName extends Transaction {
   metric_name: string
 }
