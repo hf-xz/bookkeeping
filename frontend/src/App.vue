@@ -7,7 +7,10 @@ const tabbarHeight = computed(() => tabbarRef.value?.$el.offsetHeight || 0)
 <template>
   <main class="h-dvh bg-gray-100">
     <!-- TODO title bar -->
-    <div class="h-full overflow-auto p-4" :style="{ marginBottom: tabbarHeight + 'px' }">
+    <div
+      class="h-full overflow-auto p-4 flex flex-col"
+      :style="{ paddingBottom: `calc(${tabbarHeight}px + calc(var(--spacing) * 4))` }"
+    >
       <router-view v-slot="{ Component }">
         <keep-alive>
           <component :is="Component" />

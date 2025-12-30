@@ -88,7 +88,7 @@ onMounted(async () => {
         {{ metric.name }}
       </van-field>
     </van-cell-group>
-    <div class="mt-4 flex gap-2">
+    <div class="mt-auto flex gap-2">
       <template v-if="!editing">
         <van-button round block type="primary" @click="startEdit"> 编辑 </van-button>
       </template>
