@@ -76,19 +76,19 @@ onMounted(async () => {
     :disabled="submiting"
     class="mt-4 flex flex-col gap-4"
   >
-    <h2 class="text-2xl font-bold">每日记录</h2>
     <van-cell-group>
       <van-field
         v-for="metric in metrics"
         v-model="formData[metric.name]"
         :label="`${metric.name}${metric.unit ? ` (${metric.unit})` : ''}`"
+        label-width="8em"
         :placeholder="metric.description || '0'"
         type="number"
       >
         {{ metric.name }}
       </van-field>
     </van-cell-group>
-    <div class="mx-4 flex gap-2">
+    <div class="mt-4 flex gap-2">
       <template v-if="!editing">
         <van-button round block type="primary" @click="startEdit"> 编辑 </van-button>
       </template>

@@ -2,6 +2,7 @@
 <script lang="ts" setup>
 import type { TransactionWithMetricName } from '@/models/transaction'
 import DayRecordForm from './DayRecordForm.vue'
+import MyDatePicker from './MyDatePicker.vue'
 
 // 所有日期的记录缓存列表
 const records = ref<Record<string, Array<TransactionWithMetricName>>>({})
@@ -31,5 +32,6 @@ onMounted(async () => {
 
 <template>
   <h1 class="text-3xl font-bold text-blue-600">记录</h1>
-  <DayRecordForm :transactions="records[currentDate] || []" :date="currentDate" />
+  <MyDatePicker />
+  <DayRecordForm class="flex-1" :transactions="records[currentDate] || []" :date="currentDate" />
 </template>
