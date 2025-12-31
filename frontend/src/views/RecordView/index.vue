@@ -24,6 +24,12 @@ const today = getToday()
 // 表格编辑状态
 const formEditing = ref(false)
 
+// 更新指定日期的记录
+const updateDateRecords = async (date: string) => {
+  const res = await readOnedayTransactions(date)
+  updateRecords(res)
+}
+
 onMounted(async () => {
   // 初始加载最近一周的记录
   const startDate = addDate(today, -6)
@@ -40,6 +46,7 @@ onMounted(async () => {
       v-model:formEditing="formEditing"
       :transactions="records[currentDate] || []"
       :date="currentDate"
+      @upsert-success="updateDateRecords(currentDate)"
     />
   </main>
 </template>

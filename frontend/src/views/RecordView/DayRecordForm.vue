@@ -18,16 +18,29 @@ const editing = computed({
   },
 })
 
+// 提交表单
 const onSubmit = () => {
   console.log('提交记录表单', formData.value)
   submiting.value = true
   const toUpsert: TransactionUpsert[] = []
+  // 遍历表单数据
   for (const metricName in formData.value) {
+    // 查找对应的 metric_id
     const metricId = metrics.value?.find((m) => m.name === metricName)?.id
     if (!metricId) {
       console.warn(`未知的指标名称: ${metricName}，跳过`)
       continue
     }
+    // 如果没有填写值，跳过
+    if (!formData.value[metricName]) {
+      continue
+    }
+    // 如果与原有记录相同，跳过
+    const existingTxn = props.transactions.find((t) => t.metric_name === metricName)
+    if (existingTxn && existingTxn.value.toString() === formData.value[metricName]) {
+      continue
+    }
+    // 准备 upsert 数据
     toUpsert.push({
       metric_id: metricId,
       record_date: props.date,
@@ -35,9 +48,18 @@ const onSubmit = () => {
       note: '',
     })
   }
+  // 如果没有需要 upsert 的数据，直接返回
+  if (toUpsert.length === 0) {
+    submiting.value = false
+    editing.value = false
+    loadExistingRecord()
+    return
+  }
+  // 执行批量 upsert
   bulkUpsertTransactions(toUpsert)
     .then(() => {
       editing.value = false
+      emit('upsertSuccess')
     })
     .finally(() => {
       submiting.value = false
@@ -77,6 +99,7 @@ onMounted(async () => {
 // 定义事件
 const emit = defineEmits<{
   (e: 'update:formEditing', value: boolean): void
+  (e: 'upsertSuccess'): void
 }>()
 </script>
 
