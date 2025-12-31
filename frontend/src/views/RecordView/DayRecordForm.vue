@@ -85,28 +85,36 @@ const emit = defineEmits<{
     @submit="onSubmit"
     :readonly="!editing"
     :disabled="submiting"
-    class="relative h-full overflow-scroll"
+    class="relative h-full overflow-hidden"
   >
-    <van-cell-group>
-      <van-field
-        v-for="metric in metrics"
-        v-model="formData[metric.name]"
-        :label="`${metric.name}${metric.unit ? ` (${metric.unit})` : ''}`"
-        label-width="8em"
-        :placeholder="metric.description || '0'"
-        type="number"
-      >
-        {{ metric.name }}
-      </van-field>
-    </van-cell-group>
+    <div class="pb-16 h-full overflow-y-auto">
+      <van-cell-group>
+        <van-field
+          v-for="metric in metrics"
+          v-model="formData[metric.name]"
+          :label="`${metric.name}${metric.unit ? ` (${metric.unit})` : ''}`"
+          label-width="8em"
+          :placeholder="metric.description || '0'"
+          type="number"
+        >
+          {{ metric.name }}
+        </van-field>
+      </van-cell-group>
+    </div>
 
-    <div class="absolute bottom-0 right-0 flex gap-2 justify-end">
+    <div class="absolute bottom-2 right-2 flex gap-2 justify-end">
       <template v-if="!editing">
-        <van-button round type="primary" icon="edit" @click="startEdit"> 编辑 </van-button>
+        <van-button round type="primary" icon="edit" class="shadow-md" @click="startEdit">
+          编辑
+        </van-button>
       </template>
       <template v-else>
-        <van-button round type="default" icon="cross" @click="canclelEdit"> 取消 </van-button>
-        <van-button round type="primary" icon="success" native-type="submit"> 保存 </van-button>
+        <van-button round type="success" icon="success" class="shadow-md" native-type="submit">
+          保存
+        </van-button>
+        <van-button round type="primary" icon="cross" class="shadow-md" @click="canclelEdit">
+          取消
+        </van-button>
       </template>
     </div>
   </van-form>
