@@ -1,23 +1,21 @@
 <script setup lang="ts">
+import AppNavbar from '@/components/layouts/AppNavbar.vue'
 import AppTabbar from '@/components/layouts/AppTabbar.vue'
-const tabbarRef = ref<InstanceType<typeof AppTabbar> | null>(null)
-const tabbarHeight = computed(() => tabbarRef.value?.$el.offsetHeight || 0)
 </script>
 
 <template>
-  <main class="h-dvh bg-gray-100">
-    <!-- TODO title bar -->
-    <div
-      class="h-full overflow-auto p-4 flex flex-col"
-      :style="{ paddingBottom: `calc(${tabbarHeight}px + calc(var(--spacing) * 4))` }"
-    >
+  <main class="h-dvh bg-gray-100 flex flex-col">
+    <app-navbar />
+
+    <div class="flex-1 overflow-auto">
       <router-view v-slot="{ Component }">
         <keep-alive>
           <component :is="Component" />
         </keep-alive>
       </router-view>
     </div>
-    <app-tabbar ref="tabbarRef" />
+
+    <app-tabbar />
   </main>
 </template>
 
