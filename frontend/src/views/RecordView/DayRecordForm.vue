@@ -9,7 +9,7 @@ const props = defineProps<{
 const metrics = ref<Metric[]>()
 
 // 表单相关
-const formData = ref<Record<string, string>>({}) // key: metric_id, value: input value
+const formData = ref<Record<string, number>>({}) // key: metric_id, value: input value
 const submiting = ref(false)
 const editing = computed({
   get: () => props.formEditing,
@@ -37,14 +37,14 @@ const onSubmit = () => {
     }
     // 如果与原有记录相同，跳过
     const existingTxn = props.transactions.find((t) => t.metric_name === metricName)
-    if (existingTxn && existingTxn.value.toString() === formData.value[metricName]) {
+    if (existingTxn && existingTxn.value === formData.value[metricName]) {
       continue
     }
     // 准备 upsert 数据
     toUpsert.push({
       metric_id: metricId,
       record_date: props.date,
-      value: parseFloat(formData.value[metricName]!),
+      value: formData.value[metricName],
       note: '',
     })
   }
@@ -69,7 +69,7 @@ const onSubmit = () => {
 // 加载已有记录到表单
 const loadExistingRecord = async () => {
   for (const txn of props.transactions) {
-    formData.value[txn.metric_name] = txn.value.toString()
+    formData.value[txn.metric_name] = txn.value
   }
 }
 
@@ -114,7 +114,7 @@ const emit = defineEmits<{
       <van-cell-group>
         <van-field
           v-for="metric in metrics"
-          v-model="formData[metric.name]"
+          v-model.number="formData[metric.name]"
           :label="`${metric.name}${metric.unit ? ` (${metric.unit})` : ''}`"
           label-width="8em"
           :placeholder="metric.description || '0'"
