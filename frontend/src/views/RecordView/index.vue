@@ -21,6 +21,8 @@ const updateRecords = (txns: TransactionWithMetricName[]) => {
 const currentDate = ref<string>(getToday())
 // 今日日期
 const today = getToday()
+// 表格编辑状态
+const formEditing = ref(false)
 
 onMounted(async () => {
   // 初始加载最近一周的记录
@@ -32,7 +34,12 @@ onMounted(async () => {
 
 <template>
   <main class="h-full flex flex-col p-4 gap-4">
-    <MyDatePicker />
-    <DayRecordForm class="flex-1" :transactions="records[currentDate] || []" :date="currentDate" />
+    <MyDatePicker :disabled="formEditing" />
+    <DayRecordForm
+      class="flex-1"
+      v-model:formEditing="formEditing"
+      :transactions="records[currentDate] || []"
+      :date="currentDate"
+    />
   </main>
 </template>

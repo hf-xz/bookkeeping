@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 const props = defineProps<{
+  formEditing: boolean
   transactions: Array<TransactionWithMetricName>
   date: string
 }>()
@@ -9,8 +10,13 @@ const metrics = ref<Metric[]>()
 
 // 表单相关
 const formData = ref<Record<string, string>>({}) // key: metric_id, value: input value
-const editing = ref(false)
 const submiting = ref(false)
+const editing = computed({
+  get: () => props.formEditing,
+  set: (val: boolean) => {
+    emit('update:formEditing', val)
+  },
+})
 
 const onSubmit = () => {
   console.log('提交记录表单', formData.value)
@@ -67,6 +73,11 @@ onMounted(async () => {
     { immediate: true },
   )
 })
+
+// 定义事件
+const emit = defineEmits<{
+  (e: 'update:formEditing', value: boolean): void
+}>()
 </script>
 
 <template>
