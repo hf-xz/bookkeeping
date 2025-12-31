@@ -74,7 +74,7 @@ onMounted(async () => {
     @submit="onSubmit"
     :readonly="!editing"
     :disabled="submiting"
-    class="mt-4 flex flex-col gap-4"
+    class="relative h-full overflow-scroll"
   >
     <van-cell-group>
       <van-field
@@ -88,13 +88,14 @@ onMounted(async () => {
         {{ metric.name }}
       </van-field>
     </van-cell-group>
-    <div class="mt-auto flex gap-2">
+
+    <div class="absolute bottom-0 right-0 flex gap-2 justify-end">
       <template v-if="!editing">
-        <van-button round block type="primary" @click="startEdit"> 编辑 </van-button>
+        <van-button round type="primary" icon="edit" @click="startEdit"> 编辑 </van-button>
       </template>
       <template v-else>
-        <van-button round block type="default" @click="canclelEdit"> 取消 </van-button>
-        <van-button round block type="primary" native-type="submit"> 保存 </van-button>
+        <van-button round type="default" icon="cross" @click="canclelEdit"> 取消 </van-button>
+        <van-button round type="primary" icon="success" native-type="submit"> 保存 </van-button>
       </template>
     </div>
   </van-form>

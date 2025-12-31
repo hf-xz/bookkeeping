@@ -31,7 +31,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <main class="h-full flex flex-col p-4 gap-2">
+  <main class="h-full flex flex-col p-4 gap-4">
     <MyDatePicker />
     <DayRecordForm class="flex-1" :transactions="records[currentDate] || []" :date="currentDate" />
   </main>
