@@ -68,6 +68,7 @@ const onSubmit = () => {
 
 // 加载已有记录到表单
 const loadExistingRecord = async () => {
+  formData.value = {}
   for (const txn of props.transactions) {
     formData.value[txn.metric_name] = txn.value
   }
@@ -86,9 +87,10 @@ const canclelEdit = () => {
 onMounted(async () => {
   // 加载指标列表
   metrics.value = await readMetrics()
+  // FIXME 首次打开不加载
   // 加载已有记录
   watch(
-    () => props.transactions,
+    () => props.date,
     () => {
       loadExistingRecord()
     },
