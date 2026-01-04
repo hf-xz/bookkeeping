@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { localeDateString } from '@/utils/date'
+
 const props = defineProps<{
   selectDate: string
   disabled: boolean
@@ -28,7 +30,7 @@ const today = getToday()
 <template>
   <div class="w-full grid grid-cols-[4rem_auto_4rem] items-center">
     <van-button plain :disabled icon="arrow-left" @click="selectYesterday" />
-    <span class="text-md text-center font-mono">{{ date }}</span>
+    <span class="text-md text-center">{{ localeDateString(date) }}</span>
     <van-button plain :disabled="disabled || date == today" icon="arrow" @click="selectTommorow" />
   </div>
 </template>
