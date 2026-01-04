@@ -84,13 +84,14 @@ const canclelEdit = () => {
 }
 
 // 初始化
-onMounted(async () => {
+onMounted(() => {
   // 加载指标列表
-  metrics.value = await readMetrics()
-  // FIXME 首次打开不加载
+  readMetrics().then((res) => {
+    metrics.value = res
+  })
   // 加载已有记录
   watch(
-    () => props.date,
+    () => props.transactions,
     () => {
       loadExistingRecord()
     },
