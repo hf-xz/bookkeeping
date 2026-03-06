@@ -40,3 +40,21 @@ export const bulkUpsertTransactions = async (transactions: TransactionUpsert[]) 
     body: JSON.stringify(transactions),
   })
 }
+
+export interface ProfitResponse {
+  record_date: string
+  profit: number
+  details: Record<string, number>
+}
+
+export const readProfit = async (start_date?: string, end_date?: string) => {
+  const params = new URLSearchParams()
+  if (start_date) params.append('start_date', start_date)
+  if (end_date) params.append('end_date', end_date)
+
+  const queryString = params.toString() ? '?' + params.toString() : ''
+
+  return await request('/transactions/profit' + queryString, {
+    method: 'GET',
+  }).then((data) => data as ProfitResponse[])
+}
