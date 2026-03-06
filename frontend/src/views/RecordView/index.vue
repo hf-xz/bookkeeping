@@ -2,12 +2,19 @@
 <script lang="ts" setup>
 import { watch } from 'vue'
 import { onActivated } from 'vue'
+import { readMetrics } from '@/apis/metrics'
 import type { TransactionWithMetricName } from '@/models/transaction'
+import type { Metric } from '@/models/metric'
 import DayRecordForm from './DayRecordForm.vue'
 import MyDatePicker from './MyDatePicker.vue'
 
 // 所有日期的记录缓存列表
 const records = ref<Record<string, Array<TransactionWithMetricName>>>({})
+// 指标列表
+const metrics = ref<Metric[]>([])
+
+// 必填指标数量
+const dailyMetricsCount = computed(() => metrics.value.filter((m) => m.type === 'daily').length)
 
 // 更新记录缓存
 const updateRecords = (txns: TransactionWithMetricName[], startDate: string, endDate: string) => {
@@ -24,6 +31,21 @@ const currentDate = ref<string>(getToday())
 const today = getToday()
 // 表格编辑状态
 const formEditing = ref(false)
+
+// 检查是否需要自动进入编辑模式
+const shouldAutoEdit = (date: string, txns: TransactionWithMetricName[]): boolean => {
+  // 只有今天是自动编辑
+  if (date !== today) return false
+  // 必填指标数量
+  const dailyCount = dailyMetricsCount.value
+  if (dailyCount === 0) return false
+  // 检查必填指标是否填完
+  const filledDailyMetrics = txns.map((t) => t.metric_name)
+  const filledDailyCount = metrics.value
+    .filter((m) => m.type === 'daily')
+    .filter((m) => filledDailyMetrics.includes(m.name)).length
+  return filledDailyCount < dailyCount
+}
 
 // 更新指定日期的记录
 const updateDateRecords = async (date: string, autoEdit = false) => {
@@ -44,9 +66,11 @@ const loadWeekData = async () => {
 
 // 每次页面显示时刷新
 onActivated(async () => {
+  // 先加载指标列表
+  metrics.value = await readMetrics()
   await loadWeekData()
   // 如果当前日期没有记录，自动进入编辑模式
-  if (!records.value[currentDate.value] || records.value[currentDate.value].length === 0) {
+  if (shouldAutoEdit(currentDate.value, records.value[currentDate.value] || [])) {
     formEditing.value = true
   }
 })
@@ -58,7 +82,7 @@ watch(
     // 缓存没有才加载，有缓存则检查是否需要自动编辑
     if (!records.value[newDate]) {
       updateDateRecords(newDate, true)
-    } else if (records.value[newDate].length === 0) {
+    } else if (shouldAutoEdit(newDate, records.value[newDate])) {
       formEditing.value = true
     }
   },
