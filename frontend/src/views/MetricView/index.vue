@@ -124,7 +124,7 @@ const onDelete = async (id: number) => {
           <van-field v-model="editingMetric.unit!" label="单位" placeholder="如：元、人" />
           <van-field
             v-model.number="editingMetric.weight!"
-            type="digit"
+            type="number"
             label="权重"
             placeholder="1.0"
           />
@@ -134,11 +134,11 @@ const onDelete = async (id: number) => {
             placeholder="fixed / optional"
           />
           <van-field v-model="editingMetric.description!" label="描述" placeholder="可选" />
-          <van-switch-cell
-            v-model="editingMetric.is_active!"
-            title="启用"
-            :border="false"
-          />
+          <van-cell center title="启用">
+            <template #value>
+              <van-switch v-model="editingMetric.is_active!" />
+            </template>
+          </van-cell>
         </van-cell-group>
 
         <div class="flex gap-2 mt-auto">
