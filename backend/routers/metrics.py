@@ -15,7 +15,7 @@ class MetricBase(BaseModel):
     name: str = Field(..., max_length=100, description="指标名称，如'销售额'")
     unit: str = Field("", max_length=20, description="单位，如'元'、'人'")
     weight: float = Field(1.0, description="权重（可为负值）")
-    fixed: bool = Field(False, description="是否每日固定录入")
+    type: str = Field("", description="类型：如 'fixed'(固定)、'optional'(可选)")
     description: str = Field("", max_length=200, description="描述信息")
     is_active: bool = True
 
@@ -28,7 +28,7 @@ class MetricUpdate(BaseModel):
     name: str | None = Field(None, max_length=100)
     unit: str | None = Field(None, max_length=20)
     weight: float | None = None
-    fixed: bool | None = None
+    type: str | None = None
     description: str | None = Field(None, max_length=200)
     is_active: bool | None = None
 

@@ -3,7 +3,7 @@ export interface Metric {
   name: string
   unit: string
   weight: number
-  fixed: boolean
+  type: string
   description: string
   is_active: boolean
 }
