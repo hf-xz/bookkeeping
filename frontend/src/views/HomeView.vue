@@ -3,12 +3,15 @@ import { ref, computed } from 'vue'
 import { onActivated } from 'vue'
 import { readMetrics } from '@/apis/metrics'
 import { readOnedayTransactions, readProfit, type ProfitResponse } from '@/apis/transactions'
-import { getToday } from '@/utils/date'
+import { getToday, getCurrentMonthRange } from '@/utils/date'
+import ProfitLineChart from '@/components/charts/ProfitLineChart.vue'
+import ProfitPieChart from '@/components/charts/ProfitPieChart.vue'
 
 const today = getToday()
 const metrics = ref<Metric[]>([])
 const todayTransactions = ref<TransactionWithMetricName[]>([])
 const todayProfit = ref<ProfitResponse | null>(null)
+const monthProfitData = ref<ProfitResponse[]>([])
 
 // 今日填写情况
 const filledMetrics = computed(() => {
@@ -24,16 +27,17 @@ const fillRate = computed(() => {
 
 // 加载数据
 const loadData = async () => {
-  // 并行请求
-  const [metricsRes, txnsRes, profitRes] = await Promise.all([
+  const [metricsRes, txnsRes, profitRes, monthProfitRes] = await Promise.all([
     readMetrics(),
     readOnedayTransactions(today),
     readProfit(today, today),
+    readProfit(getCurrentMonthRange().start, getCurrentMonthRange().end),
   ])
 
   metrics.value = metricsRes
   todayTransactions.value = txnsRes
   todayProfit.value = profitRes[0] || null
+  monthProfitData.value = monthProfitRes
 }
 
 // 每次页面显示时刷新
@@ -62,6 +66,34 @@ onActivated(() => {
           >
             {{ todayProfit?.profit?.toFixed(2) ?? '--' }} 元
           </span>
+        </template>
+      </van-cell>
+    </van-cell-group>
+
+    <!-- 本月利润走势图 -->
+    <div class="text-lg font-bold">本月利润走势</div>
+
+    <van-cell-group inset>
+      <van-cell>
+        <template #value>
+          <ProfitLineChart v-if="monthProfitData.length > 0" :profit-data="monthProfitData" />
+          <div v-else class="h-40 flex items-center justify-center text-gray-400">
+            暂无数据
+          </div>
+        </template>
+      </van-cell>
+    </van-cell-group>
+
+    <!-- 利润分布 -->
+    <div class="text-lg font-bold">利润分布</div>
+
+    <van-cell-group inset>
+      <van-cell>
+        <template #value>
+          <ProfitPieChart v-if="monthProfitData.length > 0" :profit-data="monthProfitData" />
+          <div v-else class="h-40 flex items-center justify-center text-gray-400">
+            暂无数据
+          </div>
         </template>
       </van-cell>
     </van-cell-group>
