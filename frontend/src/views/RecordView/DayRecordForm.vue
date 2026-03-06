@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+import { computed, watch, onMounted } from 'vue'
+import type { Metric, MetricType } from '@/models/metric'
+
 const props = defineProps<{
   formEditing: boolean
   transactions: Array<TransactionWithMetricName>
@@ -8,8 +11,12 @@ const props = defineProps<{
 // Metrics 列表
 const metrics = ref<Metric[]>()
 
+// 按类型分组
+const dailyMetrics = computed(() => metrics.value?.filter((m) => m.type === 'daily') || [])
+const optionalMetrics = computed(() => metrics.value?.filter((m) => m.type === 'optional') || [])
+
 // 表单相关
-const formData = ref<Record<string, number>>({}) // key: metric_id, value: input value
+const formData = ref<Record<string, number>>({}) // key: metric_name, value: input value
 const submiting = ref(false)
 const editing = computed({
   get: () => props.formEditing,
@@ -114,9 +121,26 @@ const emit = defineEmits<{
     class="relative h-full overflow-hidden"
   >
     <div class="pb-16 h-full overflow-y-auto">
-      <van-cell-group inset>
+      <!-- 每日指标 -->
+      <van-cell-group v-if="dailyMetrics.length > 0" inset title="每日必填">
         <van-field
-          v-for="metric in metrics"
+          v-for="metric in dailyMetrics"
+          :key="metric.id"
+          v-model.number="formData[metric.name]"
+          :label="`${metric.name}${metric.unit ? ` (${metric.unit})` : ''}`"
+          label-width="8em"
+          :placeholder="metric.description || '0'"
+          type="number"
+        >
+          {{ metric.name }}
+        </van-field>
+      </van-cell-group>
+
+      <!-- 可选指标 -->
+      <van-cell-group v-if="optionalMetrics.length > 0" inset title="可选">
+        <van-field
+          v-for="metric in optionalMetrics"
+          :key="metric.id"
           v-model.number="formData[metric.name]"
           :label="`${metric.name}${metric.unit ? ` (${metric.unit})` : ''}`"
           label-width="8em"

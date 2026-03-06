@@ -13,13 +13,16 @@ const todayTransactions = ref<TransactionWithMetricName[]>([])
 const todayProfit = ref<ProfitResponse | null>(null)
 const monthProfitData = ref<ProfitResponse[]>([])
 
-// 今日填写情况
+// 只统计每日类型的指标
+const dailyMetrics = computed(() => metrics.value.filter((m) => m.type === 'daily'))
+
+// 今日填写情况（只统计每日指标）
 const filledMetrics = computed(() => {
   return todayTransactions.value.map((t) => t.metric_name)
 })
 
 const filledCount = computed(() => filledMetrics.value.length)
-const totalCount = computed(() => metrics.value.length)
+const totalCount = computed(() => dailyMetrics.value.length)
 const fillRate = computed(() => {
   if (totalCount.value === 0) return 0
   return Math.round((filledCount.value / totalCount.value) * 100)

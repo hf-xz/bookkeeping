@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
-import type { Metric } from '@/models/metric'
+import type { Metric, MetricType } from '@/models/metric'
 import { readMetrics, createMetric, updateMetric, deleteMetric } from '@/apis/metrics'
 import { showConfirmDialog, showToast } from 'vant'
 
@@ -9,6 +9,11 @@ const metrics = ref<Metric[]>([])
 const showEditPopup = ref(false)
 const editingMetric = ref<Partial<Metric>>({})
 const isEditing = ref(false)
+
+const typeOptions = [
+  { text: '每日', value: 'daily' },
+  { text: '可选', value: 'optional' },
+]
 
 // 加载指标列表
 const loadMetrics = async () => {
@@ -30,7 +35,7 @@ const onAdd = () => {
     name: '',
     unit: '',
     weight: 1.0,
-    type: '',
+    type: 'optional',
     description: '',
     is_active: true,
   }
@@ -128,11 +133,10 @@ const onDelete = async (id: number) => {
             label="权重"
             placeholder="1.0"
           />
-          <van-field
-            v-model="editingMetric.type!"
-            label="类型"
-            placeholder="fixed / optional"
-          />
+          <van-radio-group v-model="editingMetric.type!" direction="horizontal" class="ml-2">
+            <van-radio name="daily">每日</van-radio>
+            <van-radio name="optional">可选</van-radio>
+          </van-radio-group>
           <van-field v-model="editingMetric.description!" label="描述" placeholder="可选" />
           <van-cell center title="启用">
             <template #value>

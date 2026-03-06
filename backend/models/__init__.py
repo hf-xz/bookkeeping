@@ -1,4 +1,4 @@
-from .metric import Metric
+from .metric import Metric, MetricType
 from .transaction import Transaction
 
-__all__ = ["Metric", "Transaction"]
+__all__ = ["Metric", "MetricType", "Transaction"]
