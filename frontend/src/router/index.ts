@@ -23,6 +23,12 @@ const router = createRouter({
       name: 'record',
       meta: { title: '记录', tabbar: true, icon: 'orders-o' },
     },
+    {
+      component: () => import('@/views/MetricView/index.vue'),
+      path: '/metric',
+      name: 'metric',
+      meta: { title: '指标', tabbar: true, icon: 'setting-o' },
+    },
   ],
 })
 
