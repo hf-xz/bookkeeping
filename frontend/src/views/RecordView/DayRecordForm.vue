@@ -114,7 +114,7 @@ const emit = defineEmits<{
     class="relative h-full overflow-hidden"
   >
     <div class="pb-16 h-full overflow-y-auto">
-      <van-cell-group>
+      <van-cell-group inset>
         <van-field
           v-for="metric in metrics"
           v-model.number="formData[metric.name]"
