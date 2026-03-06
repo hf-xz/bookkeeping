@@ -12,7 +12,7 @@ import {
   Legend,
 } from 'chart.js'
 import type { ProfitResponse } from '@/apis/transactions'
-import { localeDateString } from '@/utils/date'
+import { shortDateString } from '@/utils/date'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
@@ -21,7 +21,7 @@ const props = defineProps<{
 }>()
 
 const chartData = computed(() => {
-  const labels = props.profitData.map((p) => localeDateString(p.record_date))
+  const labels = props.profitData.map((p) => shortDateString(p.record_date))
   const data = props.profitData.map((p) => p.profit)
 
   return {
@@ -49,8 +49,17 @@ const chartOptions = {
   },
   scales: {
     x: {
-      display: false,
+      ticks: {
+        // 最多显示7个标签，超过则每隔n个显示一个
+        callback: function (val, index) {
+          const total = props.profitData.length
+          if (total <= 7) return this.getLabelForValue(val as number)
+          const step = Math.ceil(total / 7)
+          return index % step === 0 ? this.getLabelForValue(val as number) : ''
+        },
+      },
     },
+    y: {},
   },
 }
 </script>

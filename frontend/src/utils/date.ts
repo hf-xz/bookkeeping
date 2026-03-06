@@ -27,6 +27,11 @@ export const localeDateString = (dateStr: string): string => {
   return dayjs(dateStr).format(ZH_DATE_FORMAT)
 }
 
+// 短日期格式，用于图表
+export const shortDateString = (dateStr: string): string => {
+  return dayjs(dateStr).format('MM-DD')
+}
+
 // 获取本月第一天和最后一天
 export const getCurrentMonthRange = (): { start: string; end: string } => {
   const start = dayjs().startOf('month').format(DATE_FORMAT)
