@@ -6,7 +6,6 @@ import { readOnedayTransactions, readProfit, type ProfitResponse } from '@/apis/
 import { getToday } from '@/utils/date'
 
 const today = getToday()
-const loading = ref(false)
 const metrics = ref<Metric[]>([])
 const todayTransactions = ref<TransactionWithMetricName[]>([])
 const todayProfit = ref<ProfitResponse | null>(null)
@@ -25,21 +24,16 @@ const fillRate = computed(() => {
 
 // 加载数据
 const loadData = async () => {
-  loading.value = true
-  try {
-    // 并行请求
-    const [metricsRes, txnsRes, profitRes] = await Promise.all([
-      readMetrics(),
-      readOnedayTransactions(today),
-      readProfit(today, today),
-    ])
+  // 并行请求
+  const [metricsRes, txnsRes, profitRes] = await Promise.all([
+    readMetrics(),
+    readOnedayTransactions(today),
+    readProfit(today, today),
+  ])
 
-    metrics.value = metricsRes
-    todayTransactions.value = txnsRes
-    todayProfit.value = profitRes[0] || null
-  } finally {
-    loading.value = false
-  }
+  metrics.value = metricsRes
+  todayTransactions.value = txnsRes
+  todayProfit.value = profitRes[0] || null
 }
 
 // 每次页面显示时刷新
@@ -50,28 +44,26 @@ onActivated(() => {
 
 <template>
   <main class="h-full flex flex-col p-4 gap-4 overflow-y-auto">
-    <van-pull-refresh v-model="loading" @refresh="loadData">
-      <!-- 今日概览 -->
-      <div class="text-lg font-bold">今日概览</div>
+    <!-- 今日概览 -->
+    <div class="text-lg font-bold">今日概览</div>
 
-      <van-cell-group inset>
-        <van-cell title="填写进度">
-          <template #value>
-            <span :class="fillRate === 100 ? 'text-green-500' : 'text-orange-500'">
-              {{ filledCount }} / {{ totalCount }} ({{ fillRate }}%)
-            </span>
-          </template>
-        </van-cell>
-        <van-cell title="今日利润">
-          <template #value>
-            <span
-              :class="todayProfit && todayProfit.profit >= 0 ? 'text-green-500' : 'text-red-500'"
-            >
-              {{ todayProfit?.profit?.toFixed(2) ?? '--' }} 元
-            </span>
-          </template>
-        </van-cell>
-      </van-cell-group>
-    </van-pull-refresh>
+    <van-cell-group inset>
+      <van-cell title="填写进度">
+        <template #value>
+          <span :class="fillRate === 100 ? 'text-green-500' : 'text-orange-500'">
+            {{ filledCount }} / {{ totalCount }} ({{ fillRate }}%)
+          </span>
+        </template>
+      </van-cell>
+      <van-cell title="今日利润">
+        <template #value>
+          <span
+            :class="todayProfit && todayProfit.profit >= 0 ? 'text-green-500' : 'text-red-500'"
+          >
+            {{ todayProfit?.profit?.toFixed(2) ?? '--' }} 元
+          </span>
+        </template>
+      </van-cell>
+    </van-cell-group>
   </main>
 </template>
