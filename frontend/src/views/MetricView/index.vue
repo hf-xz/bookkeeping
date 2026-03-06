@@ -110,22 +110,12 @@ const onDelete = async (id: number) => {
 
     <van-button type="primary" block round @click="onAdd">新增指标</van-button>
 
-    <van-popup
-      v-model:show="showEditPopup"
-      position="bottom"
-      round
-      :style="{ height: '70%' }"
-    >
+    <van-popup v-model:show="showEditPopup" position="bottom" round :style="{ height: '70%' }">
       <div class="p-4 flex flex-col gap-4 h-full">
         <div class="text-lg font-bold">{{ isEditing ? '编辑指标' : '新增指标' }}</div>
 
         <van-cell-group>
-          <van-field
-            v-model="editingMetric.name!"
-            label="名称"
-            placeholder="如：销售额"
-            required
-          />
+          <van-field v-model="editingMetric.name!" label="名称" placeholder="如：销售额" required />
           <van-field v-model="editingMetric.unit!" label="单位" placeholder="如：元、人" />
           <van-field
             v-model.number="editingMetric.weight!"

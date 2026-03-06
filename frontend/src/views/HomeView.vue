@@ -64,9 +64,7 @@ onActivated(() => {
       </van-cell>
       <van-cell title="今日利润">
         <template #value>
-          <span
-            :class="todayProfit && todayProfit.profit >= 0 ? 'text-green-500' : 'text-red-500'"
-          >
+          <span :class="todayProfit && todayProfit.profit >= 0 ? 'text-green-500' : 'text-red-500'">
             {{ todayProfit?.profit?.toFixed(2) ?? '--' }} 元
           </span>
         </template>
@@ -80,23 +78,19 @@ onActivated(() => {
       <van-cell>
         <template #value>
           <ProfitLineChart v-if="monthProfitData.length > 0" :profit-data="monthProfitData" />
-          <div v-else class="h-40 flex items-center justify-center text-gray-400">
-            暂无数据
-          </div>
+          <div v-else class="h-40 flex items-center justify-center text-gray-400">暂无数据</div>
         </template>
       </van-cell>
     </van-cell-group>
 
-    <!-- 利润分布 -->
-    <div class="text-lg font-bold">利润分布</div>
+    <!-- 本月利润分布 -->
+    <div class="text-lg font-bold">本月利润分布</div>
 
     <van-cell-group inset>
       <van-cell>
         <template #value>
           <ProfitPieChart v-if="monthProfitData.length > 0" :profit-data="monthProfitData" />
-          <div v-else class="h-40 flex items-center justify-center text-gray-400">
-            暂无数据
-          </div>
+          <div v-else class="h-40 flex items-center justify-center text-gray-400">暂无数据</div>
         </template>
       </van-cell>
     </van-cell-group>
