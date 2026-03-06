@@ -1,12 +1,14 @@
 # backend/database.py
+import os
 from typing import Generator
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, declarative_base, sessionmaker
 from sqlalchemy.pool import StaticPool
 
-# SQLite 数据库 URL（相对路径：项目根目录下的 ./app.db）
-SQLALCHEMY_DATABASE_URL = "sqlite:///./app.db"
+# 数据库路径从环境变量读取，默认当前目录
+DB_PATH = os.getenv("DB_PATH", "./app.db")
+SQLALCHEMY_DATABASE_URL = f"sqlite:///{DB_PATH}"
 
 # 关键：SQLite 支持多线程需加 connect_args（仅同步用）
 engine = create_engine(
