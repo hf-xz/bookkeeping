@@ -51,17 +51,25 @@ const chartOptions = {
     x: {
       ticks: {
         // 最多显示7个标签，超过则每隔n个显示一个
-        callback: function (val, index) {
+        callback: function (val: string | number, index: number) {
           const total = props.profitData.length
-          if (total <= 7) return this.getLabelForValue(val as number)
+          const data = props.profitData
+          if (total <= 7) {
+            const item = data[Number(val)]
+            return item ? shortDateString(item.record_date) : ''
+          }
           const step = Math.ceil(total / 7)
-          return index % step === 0 ? this.getLabelForValue(val as number) : ''
+          if (index % step === 0) {
+            const item = data[index]
+            return item ? shortDateString(item.record_date) : ''
+          }
+          return ''
         },
       },
     },
     y: {},
   },
-}
+} as const
 </script>
 
 <template>
