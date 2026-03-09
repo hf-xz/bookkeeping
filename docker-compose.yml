@@ -10,7 +10,7 @@ services:
     environment:
       - DB_PATH=/data/bookkeeping.db
     volumes:
-      - /data:/data
+      - /data/bookkeeping:/data
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/"]
